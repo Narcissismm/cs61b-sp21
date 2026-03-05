@@ -3,7 +3,6 @@ package game2048;
 import java.util.Formatter;
 import java.util.Observable;
 
-
 /** The state of a game of 2048.
  *  @author Narcissismm
  */
@@ -109,7 +108,13 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
+        board.setViewingPerspective(side);
+        for (int col = 0; col < board.size(); col += 1) {
+            if (processColumn(board, col)) {
+                changed = true;
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
@@ -120,7 +125,37 @@ public class Model extends Observable {
         }
         return changed;
     }
-
+    private boolean processColumn(Board b, int col) {
+        int size = b.size();
+        boolean changed = false;
+        boolean[] merged = new boolean[size];
+        for (int row = size - 2; row >= 0; row -= 1) {
+            Tile t = b.tile(col, row);
+            if (t == null) {
+                continue;
+            }
+            int targetRow = row;
+            for (int nextRow = row + 1; nextRow < size; nextRow += 1) {
+                Tile nextT = b.tile(col, nextRow);
+                if (nextT == null) {
+                    targetRow = nextRow;
+                } else if (nextT.value() == t.value() && !merged[nextRow]) {
+                    targetRow = nextRow;
+                    merged[nextRow] = true;
+                    break;
+                } else {
+                    break;
+                }
+            }
+            if (targetRow != row) {
+                if (b.move(col, targetRow, t)) {
+                    this.score += b.tile(col, targetRow).value();
+                }
+                changed = true;
+            }
+        }
+        return changed;
+        }
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
      */
@@ -141,9 +176,8 @@ public class Model extends Observable {
         for (int col = 0; col < size; col += 1) {
             for (int row = 0; row < size; row += 1) {
                 if (b.tile(col, row) == null) {
-                    return true; 
+                    return true;
                 }
-                
             }
         }
         return false;
@@ -158,7 +192,8 @@ public class Model extends Observable {
         int size = b.size();
         for (int col = 0; col < size; col += 1) {
             for (int row = 0; row < size; row += 1) {
-                if (b.tile(col, row) == 2048) {
+                Tile t = b.tile(col,row);
+                if (t != null && t.value() == 2048) {
                     return true;
                 }
             }
@@ -173,7 +208,35 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+
+        // 第二步：棋盘满了，检查是否有可以合并的相邻方块
+        int size = b.size();
+
+        // 遍历所有格子
+        for (int col = 0; col < size; col += 1) {
+            for (int row = 0; row < size; row += 1) {
+
+                // 获取当前格子的值（因为已经确定没空位，所以不需要担心 null）
+                int currentTileValue = b.tile(col, row).value();
+
+                // 检查右侧方块是否数值相同
+                if (col + 1 < size) {
+                    if (b.tile(col + 1, row).value() == currentTileValue) {
+                        return true;
+                    }
+                }
+
+                // 检查上方方块是否数值相同
+                if (row + 1 < size) {
+                    if (b.tile(col, row + 1).value() == currentTileValue) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 
