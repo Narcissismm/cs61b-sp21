@@ -106,6 +106,7 @@ public class Model extends Observable {
      *    and the trailing tile does not.
      * */
     public boolean tilt(Side side) {
+        System.out.println("报告长官：接收到了按键信号 -> " + side);
         boolean changed;
         changed = false;
         board.setViewingPerspective(side);
@@ -126,36 +127,32 @@ public class Model extends Observable {
         return changed;
     }
     private boolean processColumn(Board b, int col) {
-        int size = b.size();
-        boolean changed = false;
-        boolean[] merged = new boolean[size];
-        for (int row = size - 2; row >= 0; row -= 1) {
-            Tile t = b.tile(col, row);
-            if (t == null) {
+        int size=b.size();
+        int up_row=size-1;
+        boolean merged=false;
+        boolean changed=false;
+        for(int row=size-2;row>-1;row--){
+            if(b.tile(col,row)==null){
                 continue;
             }
-            int targetRow = row;
-            for (int nextRow = row + 1; nextRow < size; nextRow += 1) {
-                Tile nextT = b.tile(col, nextRow);
-                if (nextT == null) {
-                    targetRow = nextRow;
-                } else if (nextT.value() == t.value() && !merged[nextRow]) {
-                    targetRow = nextRow;
-                    merged[nextRow] = true;
-                    break;
-                } else {
-                    break;
-                }
-            }
-            if (targetRow != row) {
-                if (b.move(col, targetRow, t)) {
-                    this.score += b.tile(col, targetRow).value();
-                }
-                changed = true;
+            if(b.tile(col,up_row)==null){
+                b.move(col,up_row,b.tile(col,row));
+                merged=false;
+                changed=true;
+            }else if(b.tile(col,row).value()!=b.tile(col,up_row).value() || merged) {
+                    up_row--;
+                    b.move(col,up_row,b.tile(col,row));
+                    merged=false;
+                    if(row!=up_row) changed=true;
+            }else{
+            merged=b.move(col,up_row,b.tile(col,row));
+            if(merged) score += b.tile(col,up_row).value();
+            up_row--;
+            changed=true;
             }
         }
         return changed;
-        }
+    }
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
      */
