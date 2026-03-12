@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Iterable<T> {
+public class ArrayDeque<T> implements Deque<T> {
     // 核心成员变量
     private T[] items;
     private int size;
@@ -14,6 +14,13 @@ public class ArrayDeque<T> implements Iterable<T> {
         items = (T[]) new Object[8];
         size=0;
         head=7;
+        tail=0;
+
+    }
+    public ArrayDeque(int s) {
+        items = (T[]) new Object[s];
+        size=0;
+        head=s-1;
         tail=0;
 
     }
@@ -49,9 +56,6 @@ public class ArrayDeque<T> implements Iterable<T> {
         size++;
     }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
 
     public int size() {
         return size;
@@ -116,22 +120,16 @@ public class ArrayDeque<T> implements Iterable<T> {
     }
     @Override
     public boolean equals(Object o) {
-        if(this==o) return true;
-        if(o==null) return false;
-        if(!(o instanceof ArrayDeque)) return false;
+        if (this == null) return true;
+        if (o == null) return false;
+        if (!(o instanceof ArrayDeque)) return false;
         ArrayDeque<?> other = (ArrayDeque<?>) o;
-        if(size!=other.size()) return false;
         Iterator<T> iter1 = this.iterator();
         Iterator<?> iter2 = other.iterator();
-        while(iter1.hasNext()&&iter2.hasNext()){
-            T item1 = iter1.next();
-            Object item2 = iter2.next();
-            if(item1==null){
-                if(item2!=null) return false;
-            }else{
-                if(!item1.equals(item2)) return false;
-            }
-
+        if (iter1 == null) {
+            if (iter2 != null) return false;
+        } else while (iter1.hasNext() && iter2.hasNext()) {
+            if (!iter1.next().equals(iter2.next())) return false;
         }
         return true;
     }
