@@ -1,10 +1,13 @@
 package deque;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 
-/** Performs some basic linked list tests. */
+/**
+ * Performs some basic linked list tests.
+ */
 public class ArrayDequeTest {
 
     @Test
@@ -36,6 +39,7 @@ public class ArrayDequeTest {
         lld1.printDeque();
 
     }
+
     @Test
     /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
     public void addRemoveTest() {
@@ -55,6 +59,7 @@ public class ArrayDequeTest {
         assertTrue("lld1 should be empty after removal", lld1.isEmpty());
 
     }
+
     @Test
     public void removeEmptyTest() {
 
@@ -76,13 +81,14 @@ public class ArrayDequeTest {
         assertEquals(errorMsg, 0, size);
 
     }
+
     @Test
     /* Check if you can create LinkedListDeques with different parameterized types*/
     public void multipleParamTest() {
 
 
-        ArrayDeque<String>  lld1 = new ArrayDeque<String>();
-        ArrayDeque<Double>  lld2 = new ArrayDeque<Double>();
+        ArrayDeque<String> lld1 = new ArrayDeque<String>();
+        ArrayDeque<Double> lld2 = new ArrayDeque<Double>();
         ArrayDeque<Boolean> lld3 = new ArrayDeque<Boolean>();
 
         lld1.addFirst("string");
@@ -94,6 +100,7 @@ public class ArrayDequeTest {
         boolean b = lld3.removeFirst();
 
     }
+
     @Test
     public void emptyNullReturnTest() {
 
