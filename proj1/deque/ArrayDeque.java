@@ -128,12 +128,12 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (o == null) return false;
         if (!(o instanceof Deque)) return false;
         Deque<?> other = (Deque<?>) o;
-        Iterator<T> iter1 = this.iterator();
-        Iterator<?> iter2 = other.iterator();
-        if (iter1 == null) {
-            if (iter2 != null) return false;
-        } else while (iter1.hasNext() && iter2.hasNext()) {
-            if (!iter1.next().equals(iter2.next())) return false;
+        if (size != other.size()) return false;
+        for (int i = 0; i < this.size(); i++) {
+            // 注意这里要用 equals 比较对象的值
+            if (!this.get(i).equals(other.get(i))) {
+                return false;
+            }
         }
         return true;
     }

@@ -95,17 +95,11 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (!(o instanceof Deque)) return false;
         Deque<?> other = (Deque<?>) o;
         if (size != other.size()) return false;
-        Iterator<T> iter1 = this.iterator();
-        Iterator<?> iter2 = other.iterator();
-        while (iter1.hasNext() && iter2.hasNext()) {
-            T item1 = iter1.next();
-            Object item2 = iter2.next();
-            if (item1 == null) {
-                if (item2 != null) return false;
-            } else {
-                if (!item1.equals(item2)) return false;
+        for (int i = 0; i < this.size(); i++) {
+            // 注意这里要用 equals 比较对象的值
+            if (!this.get(i).equals(other.get(i))) {
+                return false;
             }
-
         }
         return true;
     }
