@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Deque<T> {
+public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     // 核心成员变量
     private T[] items;
     private int size;
@@ -98,7 +98,6 @@ public class ArrayDeque<T> implements Deque<T> {
         return items[(index+head+1)%items.length];
     }
 
-    @Override
     public Iterator<T> iterator() {
         return new ArrayDequeIterator();
     }
@@ -122,8 +121,8 @@ public class ArrayDeque<T> implements Deque<T> {
     public boolean equals(Object o) {
         if (this == null) return true;
         if (o == null) return false;
-        if (!(o instanceof ArrayDeque)) return false;
-        ArrayDeque<?> other = (ArrayDeque<?>) o;
+        if (!(o instanceof Deque)) return false;
+        Deque<?> other = (Deque<?>) o;
         Iterator<T> iter1 = this.iterator();
         Iterator<?> iter2 = other.iterator();
         if (iter1 == null) {
